@@ -12,8 +12,8 @@ body {
     min-height: 100vh;
     background: #000;
     color: #0f0;
-    padding: 20px;
-    overflow: hidden;
+    padding: 10px;
+    overflow-x: hidden; /* Prevent horizontal overflow */
     position: relative;
 }
 
@@ -27,63 +27,79 @@ canvas#matrix-bg {
 }
 
 .container {
-    max-width: 500px;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    width: 90%; /* Scales with screen */
+    max-width: 450px; /* Slightly reduced for better fit */
+    background: rgba(0, 0, 0, 0.6); /* Darker for better contrast */
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 255, 0, 0.2);
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-    padding: 20px;
-    text-align: left;
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+    padding: 15px;
+    text-align: center;
     position: relative;
-    transform: perspective(1000px);
+    transform: perspective(800px);
     transition: transform 0.3s;
+    margin: 0 auto; /* Center the container */
 }
 
 .terminal-header {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     padding: 5px;
     border-bottom: 1px solid #0f0;
     font-size: 14px;
     color: #0f0;
     margin-bottom: 15px;
+    border-radius: 4px;
 }
 
 .profile-img {
-    width: 80px;
-    height: 80px;
+    width: 100px; /* Slightly larger for prominence */
+    height: 100px;
     border-radius: 50%;
     border: 2px solid #0f0;
-    margin-bottom: 15px;
-    box-shadow: 0 0 10px #0f0;
+    margin: 0 auto 20px; /* Center and add space below */
+    box-shadow: 0 0 12px #0f0;
     transform: perspective(500px) translateZ(10px);
+    display: block;
+    object-fit: cover; /* Handle image aspect ratio */
 }
 
 h1 {
-    font-size: 18px;
+    font-size: 24px; /* Larger and bold */
     color: #0f0;
-    margin-bottom: 10px;
-    text-shadow: 0 0 5px #0f0;
+    margin-bottom: 12px;
+    text-shadow: 0 0 10px #0f0;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px; /* Add subtle spacing for style */
 }
 
 .bio {
     font-size: 14px;
     margin-bottom: 20px;
-    white-space: pre-wrap;
-    overflow: hidden;
-    border-right: 2px solid #0f0;
-    animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.4); /* Softer background */
+    border: 1px solid #0f0; /* Solid green border for visibility */
+    border-radius: 5px;
+    text-align: center;
+    line-height: 1.4; /* Better readability */
+    color: #c0ffc0; /* Lighter green for contrast */
+    position: relative; /* For animation positioning */
+    overflow: visible; /* Allow border to show during animation */
+    white-space: pre-wrap; /* Preserve whitespace */
+    /* Re-enable typing animation */
+    animation: typing 4s steps(40, end) 1s forwards, blink-caret 0.75s step-end infinite;
 }
 
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: #0f0; }
+.bio::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px; /* Match border thickness */
+    background: #0f0; /* Same as border color */
+    animation: blink-caret 0.75s step-end infinite;
 }
 
 .link-button {
@@ -92,15 +108,15 @@ h1 {
     text-decoration: none;
     color: #0f0;
     padding: 10px;
-    margin: 10px 0;
+    margin: 8px 0;
     border: 1px solid #0f0;
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: 14px;
     transition: all 0.3s;
-    position: relative;
-    animation: fadeIn 1s ease-in-out;
     box-shadow: 0 0 5px #0f0;
     transform: perspective(500px) translateZ(0);
+    width: 100%; /* Full width for better mobile fit */
+    justify-content: center; /* Center text and icon */
 }
 
 .link-button i {
@@ -118,38 +134,20 @@ h1 {
     display: none;
     position: absolute;
     top: -30px;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Center the tooltip */
     background: rgba(0, 0, 0, 0.8);
-    padding: 5px;
+    padding: 5px 10px;
     border: 1px solid #0f0;
     border-radius: 3px;
     font-size: 12px;
     white-space: nowrap;
     animation: slideIn 0.3s ease-out;
-    transform: translateZ(20px);
+    z-index: 10;
 }
 
 .link-button:hover .description {
     display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
 }
 
 .modal {
@@ -169,7 +167,7 @@ h1 {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
     border: 1px solid #0f0;
-    padding: 20px;
+    padding: 15px;
     border-radius: 5px;
     max-width: 400px;
     width: 90%;
@@ -181,19 +179,19 @@ h1 {
 
 .modal-content h2 {
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .modal-content p {
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .modal-content button {
     background: #0f0;
     color: #000;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 3px;
     cursor: pointer;
     transition: transform 0.2s;
@@ -203,31 +201,60 @@ h1 {
     transform: scale(1.05);
 }
 
+/* Animations */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #0f0; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px) translateX(-50%); }
+    to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
 @keyframes popUp {
     from { transform: scale(0.8); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-    h1 { font-size: 16px; }
-    .bio { font-size: 12px; }
-    .link-button { font-size: 12px; }
-    .link-button i { font-size: 14px; }
-    .modal-content { max-width: 80%; }
+    .container { padding: 12px; max-width: 400px; }
+    .profile-img { width: 90px; height: 90px; }
+    h1 { font-size: 20px; }
+    .bio { font-size: 13px; padding: 10px; }
+    .link-button { font-size: 13px; padding: 8px; }
+    .link-button i { font-size: 15px; }
+    .modal-content { max-width: 85%; padding: 12px; }
 }
 
 @media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-    h1 { font-size: 14px; }
-    .bio { font-size: 11px; }
-    .link-button { font-size: 11px; padding: 8px; }
-    .link-button i { font-size: 12px; }
-    .modal-content { padding: 15px; }
+    .container { padding: 10px; max-width: 350px; width: 95%; }
+    .profile-img { width: 80px; height: 80px; }
+    h1 { font-size: 18px; }
+    .bio { font-size: 12px; padding: 8px; }
+    .link-button { font-size: 12px; padding: 6px; }
+    .link-button i { font-size: 14px; }
+    .modal-content { max-width: 90%; padding: 10px; }
     .modal-content h2 { font-size: 16px; }
     .modal-content p { font-size: 12px; }
 }

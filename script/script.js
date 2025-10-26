@@ -22,40 +22,6 @@ function drawMatrix() {
 }
 setInterval(drawMatrix, 50);
 
-// Particles
-const particlesCanvas = document.createElement('canvas');
-particlesCanvas.style.position = 'fixed';
-particlesCanvas.style.top = '0';
-particlesCanvas.style.left = '0';
-particlesCanvas.style.zIndex = '-1';
-document.body.appendChild(particlesCanvas);
-particlesCanvas.width = window.innerWidth;
-particlesCanvas.height = window.innerHeight;
-const pCtx = particlesCanvas.getContext('2d');
-const particles = [];
-for (let i = 0; i < 50; i++) {
-    particles.push({
-        x: Math.random() * particlesCanvas.width,
-        y: Math.random() * particlesCanvas.height,
-        z: Math.random() * 500,
-        speed: Math.random() * 0.5 + 0.2
-    });
-}
-function drawParticles() {
-    pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-    particles.forEach(p => {
-        p.y += p.speed;
-        if (p.y > particlesCanvas.height) p.y = 0;
-        const scale = 500 / (500 - p.z);
-        pCtx.beginPath();
-        pCtx.arc(p.x, p.y, scale * 2, 0, Math.PI * 2);
-        pCtx.fillStyle = `rgba(0, 255, 0, ${scale / 5})`;
-        pCtx.fill();
-    });
-    requestAnimationFrame(drawParticles);
-}
-drawParticles();
-
 // 3D Container Tilt
 const container = document.getElementById('container');
 document.addEventListener('mousemove', (e) => {
@@ -86,8 +52,6 @@ bio.addEventListener('animationend', () => {
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    particlesCanvas.width = window.innerWidth;
-    particlesCanvas.height = window.innerHeight;
     drops.length = Math.floor(canvas.width / fontSize);
     drops.fill(1);
 });
