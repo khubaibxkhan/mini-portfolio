@@ -22,14 +22,15 @@ function drawMatrix() {
 }
 setInterval(drawMatrix, 50);
 
-// 3D Container Tilt (Desktop and Mobile)
+// 3D Container Tilt (Desktop, Mobile Gyro, and Touch Fallback)
 const container = document.getElementById('container');
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let startX, startY; // For touch fallback
 
 function updateTilt(x, y) {
     const rect = container.getBoundingClientRect();
-    const tiltX = (y / rect.height) * 10; // Vertical tilt
-    const tiltY = -(x / rect.width) * 10;  // Horizontal tilt
+    const tiltX = (y / rect.height) * 8; // Slightly reduced sensitivity for smoother feel
+    const tiltY = -(x / rect.width) * 8;
     container.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 }
 
@@ -43,31 +44,53 @@ if (!isMobile) {
     });
 }
 
-// Mobile Tilt (Gyroscope-based)
+// Mobile Gyro Tilt
 if (isMobile && window.DeviceOrientationEvent) {
+    console.log('Gyroscope detected—requesting permission...');
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
                 if (permissionState === 'granted') {
-                    window.addEventListener('deviceorientation', (event) => {
-                        const gamma = event.gamma; // Tilt left-right (-90 to 90 degrees)
-                        const beta = event.beta;   // Tilt front-back (-180 to 180 degrees)
-                        const x = gamma * 0.2;    // Adjust sensitivity
-                        const y = beta * 0.2;     // Adjust sensitivity
-                        updateTilt(x, y);
-                    }, false);
+                    console.log('Gyro permission granted');
+                    window.addEventListener('deviceorientation', handleOrientation, false);
+                } else {
+                    console.log('Gyro permission denied—falling back to touch');
+                    setupTouchTilt();
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                console.log('Gyro permission error:', error);
+                setupTouchTilt();
+            });
     } else {
-        window.addEventListener('deviceorientation', (event) => {
-            const gamma = event.gamma;
-            const beta = event.beta;
-            const x = gamma * 0.2;
-            const y = beta * 0.2;
-            updateTilt(x, y);
-        }, false);
+        window.addEventListener('deviceorientation', handleOrientation, false);
     }
+}
+
+function handleOrientation(event) {
+    const gamma = event.gamma || 0; // Left-right tilt
+    const beta = event.beta || 0;   // Front-back tilt
+    const x = gamma * 0.15;         // Reduced sensitivity for Samsung A25
+    const y = beta * 0.15;
+    updateTilt(x, y);
+}
+
+// Touch Fallback for Non-Gyro Devices (e.g., A14)
+function setupTouchTilt() {
+    console.log('Setting up touch tilt fallback');
+    let touchStartX, touchStartY;
+    container.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    container.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touchX = e.touches[0].clientX - touchStartX;
+        const touchY = e.touches[0].clientY - touchStartY;
+        const x = (touchX / window.innerWidth) * 20; // Simulate tilt based on swipe
+        const y = (touchY / window.innerHeight) * 20;
+        updateTilt(x, y);
+    }, { passive: false });
 }
 
 // Modal Control
